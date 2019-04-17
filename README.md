@@ -8,6 +8,6 @@
 
 ## Note
 
-If you If you can not find "Yuansfer Payment" option in "Payment Methods", Please confirm interface program file is in the root directory of the website, then refresh the site cache(Select menu: System->Cache Management).
+If you can not find "Yuansfer Payment" option in "Payment Methods", Please confirm interface program file is in the root directory of the website, then refresh the site cache(Select menu: System->Cache Management).
 
 Run the command "php bin/magento setup:upgrade" from your root path of your website, so enable the module.
