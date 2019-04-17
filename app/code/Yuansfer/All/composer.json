@@ -1,0 +1,20 @@
+{
+    "name": "yuansfer/module-all",
+    "description": "Demonstrates integration with yuansfer payment gateway",
+    "require": {
+        "php": "~5.6.5|7.0.2|7.0.4|~7.0.6|~7.1.0"
+    },
+    "type": "magento2-module",
+    "version": "2.0.0",
+    "license": [
+        "Commercial"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Yuansfer\\All\\": ""
+        }
+    }
+}

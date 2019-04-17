@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <yuansfer_alipay>
+                <active>1</active>
+                <model>AlipayMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Yuansfer AliPay</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </yuansfer_alipay>
+            <yuansfer_unionpay>
+                <active>1</active>
+                <model>UnionpayMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Yuansfer UnionPay</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </yuansfer_unionpay>
+            <yuansfer_wechatpay>
+                <active>1</active>
+                <model>WechatpayMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Yuansfer WechatPay</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </yuansfer_wechatpay>
+        </payment>
+    </default>
+</config>
