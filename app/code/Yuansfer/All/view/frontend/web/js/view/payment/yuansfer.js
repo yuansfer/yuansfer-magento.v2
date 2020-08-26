@@ -7,7 +7,8 @@ define([
         var config = window.checkoutConfig.payment,
             alipayType = 'yuansfer_alipay',
             unionpayType = 'yuansfer_unionpay',
-            wechatpayType = 'yuansfer_wechatpay';            
+            wechatpayType = 'yuansfer_wechatpay',
+            creditcardType = 'yuansfer_creditcard';
 
             if(config[alipayType].isActive) {
                 rendererList.push(
@@ -33,7 +34,15 @@ define([
                     }
                 );
             }
- 
+            if(config[creditcardType].isActive) {
+                rendererList.push(
+                    {
+                        type: creditcardType,
+                        component: 'Yuansfer_All/js/view/payment/method-renderer/yuansfer_creditcard'
+                    }
+                );
+            }
+
         /** Add view logic here if needed */
         return Component.extend({});
     });

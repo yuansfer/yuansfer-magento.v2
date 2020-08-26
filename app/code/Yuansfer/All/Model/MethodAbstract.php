@@ -27,6 +27,7 @@ class MethodAbstract implements \Magento\Payment\Model\MethodInterface
     const CODE_UNIONPAY = 'yuansfer_unionpay';
     const CODE_ALIPAY = 'yuansfer_alipay';
     const CODE_WECHATPAY = 'yuansfer_wechatpay';
+    const CODE_CREDITCARD = 'yuansfer_creditcard';
 
     protected $_store;
     protected $_urlBuilder;
@@ -234,7 +235,7 @@ class MethodAbstract implements \Magento\Payment\Model\MethodInterface
             ]
         );
 
-        return $checkResult->getData('is_available');        
+        return $checkResult->getData('is_available');
 }
     // public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
     // {
@@ -756,6 +757,6 @@ class MethodAbstract implements \Magento\Payment\Model\MethodInterface
     {
         return $this->getConfiguredValue('payment_action');
     }
-    
+
 
 }

@@ -53,13 +53,13 @@ class YuansferConfigProvider implements ConfigProviderInterface
      * @return array
      */
     public function getConfig()
-    {   
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
-        $store = $objectManager->get('Magento\Store\Api\Data\StoreInterface'); 
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $store = $objectManager->get('Magento\Store\Api\Data\StoreInterface');
         $localeCode = $store->getLocaleCode();
         if($localeCode != "zh_CN")
             $localeCode = "en_US";
-        
+
         $alipayImage = $this->assetRepo->getUrl("Yuansfer_All::images/yuansfer_alipay/logo_".$localeCode.".svg");
         $alipayWidth = "165";
 
@@ -68,6 +68,9 @@ class YuansferConfigProvider implements ConfigProviderInterface
 
         $wechatpayImage = $this->assetRepo->getUrl("Yuansfer_All::images/yuansfer_wechatpay/logo_".$localeCode.".png");
         $wechatpayWidth = "200";
+
+        $creditcardImage = $this->assetRepo->getUrl("Yuansfer_All::images/yuansfer_creditcard/logo_".$localeCode.".png");
+        $creditcardWidth = "128";
 
         $message = 'You will be taken to the payment website when you click Place Order';
 
@@ -97,6 +100,13 @@ class YuansferConfigProvider implements ConfigProviderInterface
                     'title' => $this->config->getValue('payment/yuansfer/wechatpay_title', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
                     'imageUrl' => $wechatpayImage,
                     'imageWidth' => $wechatpayWidth
+                ],
+                MethodAbstract::CODE_CREDITCARD => [
+                    'isActive' => $this->config->getValue('payment/yuansfer/creditcard_active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'title' => $this->config->getValue('payment/yuansfer/creditcard_title', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'createAccount' => $this->config->getValue('payment/yuansfer/creditcard_create_account', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'imageUrl' => $creditcardImage,
+                    'imageWidth' => $creditcardWidth
                 ]
             ]
         ];

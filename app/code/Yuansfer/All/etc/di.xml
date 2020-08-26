@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
-    <preference for="Magento\Payment\Model\Method\Adapter" type="Yuansfer\All\Model\MethodAbstract" /> 
+    <preference for="Magento\Payment\Model\Method\Adapter" type="Yuansfer\All\Model\MethodAbstract" />
 
     <virtualType name="AlipayMethodAdapter" type="Yuansfer\All\Model\MethodAbstract">
         <arguments>
@@ -60,7 +60,7 @@
     <virtualType name="WechatpayMethodAdapter" type="Yuansfer\All\Model\MethodAbstract">
         <arguments>
             <argument name="code" xsi:type="const">Yuansfer\All\Model\MethodAbstract::CODE_WECHATPAY</argument>
-            <argument name="valueHandlerPool" xsi:type="object">UnionpayValueHandlerPool</argument>
+            <argument name="valueHandlerPool" xsi:type="object">WechatpayValueHandlerPool</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
         </arguments>
@@ -80,6 +80,33 @@
         <arguments>
             <argument name="handlers" xsi:type="array">
                 <item name="default" xsi:type="string">WechatpayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CreditcardMethodAdapter" type="Yuansfer\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Yuansfer\All\Model\MethodAbstract::CODE_CREDITCARD</argument>
+            <argument name="valueHandlerPool" xsi:type="object">CreditcardValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CreditcardConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Yuansfer\All\Model\MethodAbstract::CODE_CREDITCARD</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CreditcardConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">CreditcardConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CreditcardValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">CreditcardConfigValueHandler</item>
             </argument>
         </arguments>
     </virtualType>
