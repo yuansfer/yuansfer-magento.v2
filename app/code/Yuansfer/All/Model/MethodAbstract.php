@@ -202,7 +202,8 @@ class MethodAbstract implements \Magento\Payment\Model\MethodInterface
         // return parent::getTitle();
         return $this->getConfiguredValue('title');
     }
-    public function isAvailable(CartInterface $quote = null){
+    public function isAvailable(CartInterface $quote = null)
+    {
         if (!$this->isActive($quote ? $quote->getStoreId() : null)) {
             return false;
         }
@@ -236,7 +237,7 @@ class MethodAbstract implements \Magento\Payment\Model\MethodInterface
         );
 
         return $checkResult->getData('is_available');
-}
+    }
     // public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
     // {
 
@@ -757,6 +758,4 @@ class MethodAbstract implements \Magento\Payment\Model\MethodInterface
     {
         return $this->getConfiguredValue('payment_action');
     }
-
-
 }

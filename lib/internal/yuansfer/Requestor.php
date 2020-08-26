@@ -25,7 +25,7 @@ class Requestor
 
         $currency = $order->getOrderCurrencyCode();
         if (!in_array($currency, array('USD', 'CNY', 'RMB'), true)) {
-            throw new Error_Api('Currency only support "USD", "CNY"');
+            throw new \ErrorException('Currency only support "USD", "CNY"');
         }
 
         $httpClient = CurlClient::instance();
@@ -112,7 +112,7 @@ class Requestor
         $this->logger->debug('Requestor - ' . $msg);
     }
 
-    public function getSecureForm($merchantNo, $storeNo, $token, $vendor, $order, $ipn, $callback)
+    public function securePay($merchantNo, $storeNo, $token, $vendor, $order, $ipn, $callback, $customerId = null)
     {
         $httpClient = CurlClient::instance();
         $url = 'https://mapi.yuansfer.com/online/v2/secure-pay';
@@ -129,7 +129,7 @@ class Requestor
 
         $currency = $order->getOrderCurrencyCode();
         if (!in_array($currency, array('USD', 'CNY', 'RMB'), true)) {
-            throw new Error_Api('Currency only support "USD", "CNY"');
+            throw new \ErrorException('Currency only support "USD", "CNY"');
         }
 
         $params = array(
@@ -151,6 +151,10 @@ class Requestor
             $params['rmbAmount'] = $order->getGrandTotal();
         }
 
+        if ($customerId !== null) {
+            $params['customerNo'] = $customerId;
+        }
+
         $params = $this->addSign($params, $token);
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
@@ -159,11 +163,16 @@ class Requestor
 
         $this->log($rbody);
 
-        if ($rcode < 200 || $rcode >= 300) {
-            $this->handleApiError($rbody, $rcode, $rheaders, null, $params);
+        $resp = $this->_interpretResponse($rbody, $rcode, $rheaders, $params);
+
+        if (
+            !isset($resp['ret_code']) ||
+            $resp['ret_code'] !== '000100'
+        ) {
+            throw new \ErrorException('Order refund failed!');
         }
 
-        return $rbody;
+        return $resp['result']['cashierUrl'];
     }
 
     protected function getReferenceCode($order_id)
@@ -235,5 +244,155 @@ class Requestor
         $params['verifySign'] = $sig;
 
         return $params;
+    }
+
+    public function customer($merchantNo, $storeNo, $token, $order)
+    {
+        $info = $this->customerInfo($order);
+        $old = $this->getCustomer($merchantNo, $storeNo, $token, $order->getCustomerId());
+        if ($old === null) {
+            return $this->createCustomer($merchantNo, $storeNo, $token, $info);
+        }
+
+        $update = false;
+        foreach ($info as $k => $v) {
+            if ($v != $old[$k]) {
+                $update = true;
+                break;
+            }
+        }
+
+        if ($update) {
+            return $this->updateCustomer($merchantNo, $storeNo, $token, $info);
+        }
+
+        return $old['customerNo'];
+    }
+
+    private function updateCustomer($merchantNo, $storeNo, $token, $info)
+    {
+        $httpClient = CurlClient::instance();
+        $url = 'https://mapi.yuansfer.com/creditpay/v2/customer/edit';
+        if ($this->debug) {
+            $url = 'https://mapi.yuansfer.yunkeguan.com/creditpay/v2/customer/edit';
+        }
+
+        $params = array(
+            'merchantNo' => $merchantNo,
+            'storeNo' => $storeNo,
+        );
+        $params += $info;
+
+        $params = $this->addSign($params, $token);
+
+        $this->log('send to ' . $url . ' with params:' . print_r($params, true));
+
+        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+
+        $this->log($rbody);
+
+        $resp = $this->_interpretResponse($rbody, $rcode, $rheaders, $params);
+
+        if (
+            !isset($resp['ret_code']) ||
+            $resp['ret_code'] !== '000100'
+        ) {
+            throw new \ErrorException('Order refund failed!');
+        }
+
+        return $resp['customerInfo']['customerNo'];
+    }
+
+    private function getCustomer($merchantNo, $storeNo, $token, $id)
+    {
+        $httpClient = CurlClient::instance();
+        $url = 'https://mapi.yuansfer.com/creditpay/v2/customer/detail';
+        if ($this->debug) {
+            $url = 'https://mapi.yuansfer.yunkeguan.com/creditpay/v2/customer/detail';
+        }
+
+        $params = array(
+            'merchantNo' => $merchantNo,
+            'storeNo' => $storeNo,
+            'customerCode' => $id
+        );
+
+        $params = $this->addSign($params, $token);
+
+        $this->log('send to ' . $url . ' with params:' . print_r($params, true));
+
+        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+
+        $this->log($rbody);
+
+        $resp = $this->_interpretResponse($rbody, $rcode, $rheaders, $params);
+
+        if (
+            !isset($resp['ret_code']) ||
+            $resp['ret_code'] !== '000100' ||
+            empty($resp['customerInfo'])
+        ) {
+            return null;
+        }
+
+        return $resp['customerInfo'];
+    }
+
+    private function createCustomer($merchantNo, $storeNo, $token, $info)
+    {
+        $httpClient = CurlClient::instance();
+        $url = 'https://mapi.yuansfer.com/creditpay/v2/customer/add';
+        if ($this->debug) {
+            $url = 'https://mapi.yuansfer.yunkeguan.com/creditpay/v2/customer/add';
+        }
+
+        $params = array(
+            'merchantNo' => $merchantNo,
+            'storeNo' => $storeNo,
+            'groupCode' => 'HPP',
+        );
+        $params += $info;
+
+        $params = $this->addSign($params, $token);
+
+        $this->log('send to ' . $url . ' with params:' . print_r($params, true));
+
+        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+
+        $this->log($rbody);
+
+        $resp = $this->_interpretResponse($rbody, $rcode, $rheaders, $params);
+
+        if (
+            !isset($resp['ret_code']) ||
+            $resp['ret_code'] !== '000100'
+        ) {
+            throw new \ErrorException('Order refund failed!');
+        }
+
+        return $resp['customerInfo']['customerNo'];
+    }
+
+    private function customerInfo($order) {
+        $address = $order->getBillingAddress();
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $country = $objectManager->create('\Magento\Directory\Model\Country')->load(
+            $address->getCountryId()
+        )->getName();
+
+        return array(
+            'firstName' => $address->getFirstname(),
+            'lastName' => $address->getLastname(),
+            'customerCode' => $address->getCustomerId(),
+            'street' => $address->getStreet(),
+            'city' => $address->getCity(),
+            'state' => $address->getRegion(),
+            'country' => $country,
+            'zip' => $address->getPostcode(),
+            'email' => $address->getEmail(),
+            'phone' => $address->getTelephone(),
+            'company' => $address->getCompany(),
+        );
     }
 }
