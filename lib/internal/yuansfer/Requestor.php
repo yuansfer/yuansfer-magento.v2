@@ -4,7 +4,7 @@
 require_once('CurlClient.php');
 require_once('Error/Api.php');
 
-class Requestor 
+class Requestor
 {
     private $debug = false;
 
@@ -21,20 +21,30 @@ class Requestor
     public function refund($merchantNo, $storeNo, $token, $payment, $amount)
     {
         $transactionId = $payment->getParentTransactionId();
-//        $order = $payment->getOrder();
+        $order = $payment->getOrder();
+
+        $currency = $order->getOrderCurrencyCode();
+        if (!in_array($currency, array('USD', 'CNY', 'RMB'), true)) {
+            throw new Error_Api('Currency only support "USD", "CNY"');
+        }
 
         $httpClient = CurlClient::instance();
-        $url = 'https://mapi.yuansfer.com/appTransaction/v2/securepayRefund';
+        $url = 'https://mapi.yuansfer.com/app-data-search/v2/refund';
         if ($this->debug) {
-            $url = 'https://mapi.yuansfer.yunkeguan.com/appTransaction/v2/securepayRefund';
+            $url = 'https://mapi.yuansfer.yunkeguan.com/app-data-search/v2/refund';
         }
 
         $params = array(
             'merchantNo' => $merchantNo,
             'storeNo' => $storeNo,
-            'amount' => $amount,
             'reference' => $transactionId,
         );
+
+        if ($currency === 'USD') {
+            $params['amount'] = $amount;
+        } else {
+            $params['rmbAmount'] = $amount;
+        }
         $params = $this->addSign($params, $token);
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
@@ -105,9 +115,9 @@ class Requestor
     public function getSecureForm($merchantNo, $storeNo, $token, $vendor, $order, $ipn, $callback)
     {
         $httpClient = CurlClient::instance();
-        $url = 'https://mapi.yuansfer.com/appTransaction/v2/securepay';
+        $url = 'https://mapi.yuansfer.com/online/v2/secure-pay';
         if ($this->debug) {
-            $url = 'https://mapi.yuansfer.yunkeguan.com/appTransaction/v2/securepay';
+            $url = 'https://mapi.yuansfer.yunkeguan.com/online/v2/secure-pay';
         }
         //$headers = array('Authorization: Bearer ' . $token);
 
@@ -117,12 +127,16 @@ class Requestor
             break;
         }
 
+        $currency = $order->getOrderCurrencyCode();
+        if (!in_array($currency, array('USD', 'CNY', 'RMB'), true)) {
+            throw new Error_Api('Currency only support "USD", "CNY"');
+        }
+
         $params = array(
             'merchantNo' => $merchantNo,
             'storeNo' => $storeNo,
-            'amount' => $order->getGrandTotal(),
             'vendor' => $vendor,
-            'currency' => $order->getOrderCurrencyCode(),
+            'currency' => 'USD',
             'reference' => $this->getReferenceCode($order->getIncrementId()),
             'ipnUrl' => $ipn,
             'callbackUrl' => $callback,
@@ -130,6 +144,13 @@ class Requestor
             'description' => $product,
             'note' => sprintf('#%s(%s)', $order->getRealOrderId(), $order->getCustomerEmail()),
         );
+
+        if ($currency === 'USD') {
+            $params['amount'] = $order->getGrandTotal();
+        } else {
+            $params['rmbAmount'] = $order->getGrandTotal();
+        }
+
         $params = $this->addSign($params, $token);
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
