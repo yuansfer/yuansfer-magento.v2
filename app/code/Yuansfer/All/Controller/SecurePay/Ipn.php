@@ -91,7 +91,8 @@ class Ipn extends PostAction
         $order = $this->salesOrderFactory->create()->loadByIncrementId($order_id);
         if (!$order->getId()) {
             $this->getResponse()
-                ->setHeader('HTTP/1.1', '503 Service Unavailable')
+                ->setStatusCode(404)
+                ->setContent('Order not found')
                 ->sendResponse();
             exit;
         }
@@ -105,7 +106,8 @@ class Ipn extends PostAction
     {
          if (!isset($data['status'], $data['reference']) || !$this->verifySig($data)) {
              $this->getResponse()
-                 ->setHeader('HTTP/1.1', '503 Service Unavailable')
+                 ->setStatusCode(400)
+                 ->setContent('Params invalid')
                  ->sendResponse();
              exit;
          }
