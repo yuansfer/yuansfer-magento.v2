@@ -90,7 +90,7 @@ class Ipn extends PostAction
         $order_id = $data['reference'];
         $order = $this->salesOrderFactory->create()->loadByIncrementId($order_id);
         if (!$order->getId()) {
-            Mage::app()->getResponse()
+            $this->getResponse()
                 ->setHeader('HTTP/1.1', '503 Service Unavailable')
                 ->sendResponse();
             exit;
@@ -104,7 +104,7 @@ class Ipn extends PostAction
     protected function processPayment($data)
     {
          if (!isset($data['status'], $data['reference']) || !$this->verifySig($data)) {
-             Mage::app()->getResponse()
+             $this->getResponse()
                  ->setHeader('HTTP/1.1', '503 Service Unavailable')
                  ->sendResponse();
              exit;
@@ -115,7 +115,7 @@ class Ipn extends PostAction
         if ($data['status'] === 'success') {
             $this->successIPN($order, $data);
 
-            Mage::app()->getResponse()
+            $this->getResponse()
                 ->setBody('success');
         } else {
             $this->failIPN($order, $data);
