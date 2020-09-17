@@ -135,6 +135,10 @@ class Ipn extends \Magento\Framework\App\Action\Action
 
     protected function successIPN($order, $data)
     {
+        $state = \Magento\Sales\Model\Order::STATE_PROCESSING;
+        $order->setState($state)
+            ->setStatus($order->getConfig()->getStateDefaultStatus($state));
+
         $payment = $order->getPayment();
         $amount = $data['amount'];
         $payment->setTransactionId($data['reference'])
@@ -142,9 +146,6 @@ class Ipn extends \Magento\Framework\App\Action\Action
             ->setPreparedMessage('')
             ->setIsTransactionClosed(1)
             ->registerCaptureNotification($amount);
-        $state = \Magento\Sales\Model\Order::STATE_PROCESSING;
-        $order->setState($state)
-            ->setStatus($order->getConfig()->getStateDefaultStatus($state));
         $order->save();
 
         // notify customer
