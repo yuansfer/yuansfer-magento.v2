@@ -1,9 +1,8 @@
 <?php
 namespace Yuansfer\All\Controller\SecurePay;
 
-class Ipn extends \Magento\Framework\App\Action\Action
+class Ipn extends PostAction
 {
-
     /**
      * @var \Magento\Checkout\Helper\Data
      */
@@ -88,20 +87,7 @@ class Ipn extends \Magento\Framework\App\Action\Action
 
     protected function findOrder($data)
     {
-        if (!isset($data['reference'])) {
-            return null;
-        }
-
-        $refs = explode('at', $data['reference']);
-        //first item is order id
-        if ($refs !== null && is_array($refs)) {
-            $order_id = $refs[0];
-        } else {
-            $this->log('reference code invalid:' . $data['reference']);
-
-            return null;
-        }
-
+        $order_id = $data['reference'];
         $order = $this->salesOrderFactory->create()->loadByIncrementId($order_id);
         if (!$order->getId()) {
             Mage::app()->getResponse()
@@ -117,12 +103,12 @@ class Ipn extends \Magento\Framework\App\Action\Action
 
     protected function processPayment($data)
     {
-        // if (!isset($data['status'], $data['reference']) || !$this->verifySig($data)) {
-        //     Mage::app()->getResponse()
-        //         ->setHeader('HTTP/1.1', '503 Service Unavailable')
-        //         ->sendResponse();
-        //     exit;
-        // }
+         if (!isset($data['status'], $data['reference']) || !$this->verifySig($data)) {
+             Mage::app()->getResponse()
+                 ->setHeader('HTTP/1.1', '503 Service Unavailable')
+                 ->sendResponse();
+             exit;
+         }
 
         $order = $this->findOrder($data);
 
@@ -145,6 +131,9 @@ class Ipn extends \Magento\Framework\App\Action\Action
             ->setPreparedMessage('')
             ->setIsTransactionClosed(1)
             ->registerCaptureNotification($amount);
+        $state = \Magento\Sales\Model\Order::STATE_PROCESSING;
+        $order->setState($state)
+            ->setStatus($order->getConfig()->getStateDefaultStatus($state));
         $order->save();
 
         // notify customer
@@ -154,13 +143,13 @@ class Ipn extends \Magento\Framework\App\Action\Action
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
                 $emailSender->send($order);
-    
+
                 $order->addStatusHistoryComment(
                     $this->__('Notified customer about invoice #%s.', $invoice->getIncrementId())
                 )
                     ->setIsCustomerNotified(true)
                     ->save();
-            } catch(\Exception $e) {              
+            } catch(\Exception $e) {
             }
         }
     }
@@ -185,9 +174,8 @@ class Ipn extends \Magento\Framework\App\Action\Action
         $order->save();
     }
 
-
     protected function log($msg)
     {
-        $this->logger->debug("Yuansfer SecurePay controller - " . $msg);
+        $this->logger->debug("Yuansfer Ipn controller - " . $msg);
     }
 }
