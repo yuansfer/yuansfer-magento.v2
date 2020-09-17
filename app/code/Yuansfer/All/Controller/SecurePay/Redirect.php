@@ -118,6 +118,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     protected function log($msg)
     {
-        $this->logger->debug('Requestor - ' . $msg);
+        $this->logger->debug("Yuansfer SecurePay controller - " . $msg);
     }
 }
