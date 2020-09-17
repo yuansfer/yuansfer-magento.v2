@@ -81,7 +81,16 @@ class Callback extends \Magento\Framework\App\Action\Action
             return null;
         }
 
-        $order_id = $data['reference'];
+        $refs = explode('at', $data['reference']);
+        //first item is order id
+        if ($refs !== null && is_array($refs)) {
+            $order_id = $refs[0];
+        } else {
+            $this->log('reference code invalid:' . $data['reference']);
+
+            return null;
+        }
+
         $order = $this->salesOrderFactory->create()->loadByIncrementId($order_id);
         if (!$order->getId()) {
             $this->getResponse()
