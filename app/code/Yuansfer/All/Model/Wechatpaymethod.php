@@ -1,8 +1,8 @@
 <?php
 namespace Yuansfer\All\Model;
 
-class Wechatpaymethod extends \Yuansfer\All\Model\MethodAbstract {
-  	protected $_code  = \Yuansfer\All\Model\MethodAbstract::CODE_WECHATPAY;
+class Wechatpaymethod extends MethodAbstract {
+  	protected $_code  = MethodAbstract::CODE_WECHATPAY;
     protected $_formBlockType = \Yuansfer\All\Block\Securepay\Form;
     protected $_infoBlockType = \Magento\Payment\Block\ConfigurableInfo;
     protected $_isInitializeNeeded      = true;
