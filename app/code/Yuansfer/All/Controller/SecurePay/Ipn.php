@@ -140,7 +140,7 @@ class Ipn extends \Magento\Framework\App\Action\Action
             ->setStatus($order->getConfig()->getStateDefaultStatus($state));
 
         $payment = $order->getPayment();
-        $amount = $data['amount'];
+        $amount = !empty($data['rmbAmount']) ? $data['rmbAmount'] : $data['amount'];
         $payment->setTransactionId($data['reference'])
             ->setCurrencyCode($order->getOrderCurrencyCode())
             ->setPreparedMessage('')
