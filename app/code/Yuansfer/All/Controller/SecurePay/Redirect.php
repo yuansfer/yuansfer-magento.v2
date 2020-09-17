@@ -1,4 +1,5 @@
 <?php
+
 namespace Yuansfer\All\Controller\SecurePay;
 
 use Yuansfer\All\Model\MethodAbstract;
@@ -38,7 +39,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Sales\Model\OrderFactory $salesOrderFactory,
         \Psr\Log\LoggerInterface $logger
-    ) {
+    )
+    {
         $this->checkoutHelper = $checkoutHelper;
         $this->checkoutSession = $checkoutSession;
         $this->scopeConfig = $scopeConfig;
@@ -65,12 +67,12 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $oOrder = $this->salesOrderFactory->create()->loadByIncrementId($sOrderId);
 
         $ipn = $this->_urlBuilder->getUrl('yuansfer/securePay/ipn');
-        $callback = $this->_urlBuilder->getUrl('yuansfer/securePay/callback', array(
-            '_query' => 'status={status}&amount={amount}&reference={reference}&note={note}'
-        ));
+        $callback = $this->_urlBuilder->getUrl('yuansfer/securePay/callback', [
+            '_query' => 'status={status}&amount={amount}&reference={reference}&note={note}',
+        ]);
 
         $methodCode = "";
-        if($oOrder->getPayment()) {
+        if ($oOrder->getPayment()) {
             $methodCode = $oOrder->getPayment()->getMethod();
         }
 
@@ -111,6 +113,11 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
         $this->log('yuansfer payment redirect to:' . $url);
 
-        $this->getResponse()->setRedirct($url);
+        $this->getResponse()->setRedirect($url);
+    }
+
+    protected function log($msg)
+    {
+        $this->logger->debug('Requestor - ' . $msg);
     }
 }
