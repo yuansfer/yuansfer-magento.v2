@@ -6,5 +6,8 @@
                 <item name="yuansfer_config_provider" xsi:type="object">Yuansfer\All\Model\Ui\YuansferConfigProvider</item>
             </argument>
         </arguments>
-    </type>    
+    </type>
+    <type name="Magento\Framework\App\Request\CsrfValidator">
+        <plugin name="csrf_validator_skip" type="Yuansfer\All\Helper\CsrfValidatorSkip" />
+    </type>
 </config>

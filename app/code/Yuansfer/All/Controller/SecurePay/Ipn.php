@@ -1,7 +1,7 @@
 <?php
 namespace Yuansfer\All\Controller\SecurePay;
 
-class Ipn extends PostAction
+class Ipn extends \Magento\Framework\App\Action\Action
 {
     /**
      * @var \Magento\Checkout\Helper\Data
