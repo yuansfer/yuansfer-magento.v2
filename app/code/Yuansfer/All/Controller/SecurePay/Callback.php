@@ -106,6 +106,6 @@ class Callback extends \Magento\Framework\App\Action\Action
 
     protected function log($msg)
     {
-        $this->logger->debug("Yuansfer SecurePay controller - " . $msg);
+        $this->logger->debug("Yuansfer Callback controller - " . $msg);
     }
 }

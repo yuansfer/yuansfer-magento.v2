@@ -28,9 +28,14 @@ class Redirect extends \Magento\Framework\App\Action\Action
     protected $salesOrderFactory;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface\UrlInterface
      */
     protected $logger;
+
+    /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $_urlBuiilder;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -118,6 +123,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     protected function log($msg)
     {
-        $this->logger->debug("Yuansfer SecurePay controller - " . $msg);
+        $this->logger->debug("Yuansfer Redirect controller - " . $msg);
     }
 }
