@@ -67,9 +67,9 @@ class Callback extends \Magento\Framework\App\Action\Action
         } else {
             $this->checkoutHelper->sendPaymentFailedEmail(
                 $this->checkoutSession->getQuote(),
-                $this->__('Unable to place the order.')
+                __('Unable to place the order.')
             );
-            $this->checkoutSession->addError($this->__('Unable to place the order.'));
+            $this->checkoutSession->addError(__('Unable to place the order.'));
             $this->log('place order error');
             $this->_redirect('checkout/cart');
         }

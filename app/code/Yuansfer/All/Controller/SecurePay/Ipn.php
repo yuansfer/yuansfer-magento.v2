@@ -157,7 +157,7 @@ class Ipn extends \Magento\Framework\App\Action\Action
                 $emailSender->send($order);
 
                 $order->addStatusHistoryComment(
-                    $this->__('Notified customer about invoice #%s.', $invoice->getIncrementId())
+                    __('Notified customer about invoice #%s.', $invoice->getIncrementId())
                 )
                     ->setIsCustomerNotified(true)
                     ->save();
@@ -180,7 +180,7 @@ class Ipn extends \Magento\Framework\App\Action\Action
             $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
             $emailSender->send($order);
 
-            $comment = $this->__('Transaction ID: "%s"', $data['reference']);
+            $comment = __('Transaction ID: "%s"', $data['reference']);
             $order->addStatusHistoryComment($comment, false);
         }
         $order->save();
