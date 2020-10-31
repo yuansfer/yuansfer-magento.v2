@@ -35,7 +35,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $_urlBuiilder;
+    protected $_urlBuilder;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
