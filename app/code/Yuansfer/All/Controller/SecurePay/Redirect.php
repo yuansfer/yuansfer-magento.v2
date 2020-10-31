@@ -28,14 +28,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
     protected $salesOrderFactory;
 
     /**
-     * @var \Psr\Log\LoggerInterface\UrlInterface
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
-
-    /**
-     * @var \Magento\Framework\UrlInterface
-     */
-    protected $_urlBuilder;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -71,8 +66,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $sOrderId = $this->checkoutSession->getLastRealOrderId();
         $oOrder = $this->salesOrderFactory->create()->loadByIncrementId($sOrderId);
 
-        $ipn = $this->_urlBuilder->getUrl('yuansfer/securePay/ipn');
-        $callback = $this->_urlBuilder->getUrl('yuansfer/securePay/callback', [
+        $ipn = $this->_url->getUrl('yuansfer/securePay/ipn');
+        $callback = $this->_url->getUrl('yuansfer/securePay/callback', [
             '_query' => 'status={status}&amount={amount}&reference={reference}&note={note}',
         ]);
 
