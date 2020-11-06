@@ -1,7 +1,6 @@
 <?php
-// require_once(__DIR__ .'/CurlClient.php');
-// require_once(__DIR__ .'/Error/Api.php');
 require_once('CurlClient.php');
+require_once('MobileDetect.php');
 require_once('Error/Api.php');
 
 class Requestor
@@ -13,10 +12,13 @@ class Requestor
      */
     protected $logger;
 
+    protected $detect;
+
     public function __construct(
         \Psr\Log\LoggerInterface $logger
     ) {
         $this->logger = $logger;
+        $this->detect = new MobileDetect();
     }
     public function refund($merchantNo, $storeNo, $token, $payment, $amount)
     {
@@ -49,7 +51,7 @@ class Requestor
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
 
-        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+        [$rbody, $rcode, $rheaders] = $httpClient->request('post', $url, [], $params, false);
 
         $resp = $this->_interpretResponse($rbody, $rcode, $rheaders, $params);
 
@@ -132,6 +134,15 @@ class Requestor
             throw new \ErrorException('Currency only support "USD", "CNY"');
         }
 
+        $terminal = 'ONLINE';
+        if ($this->detect->isMobile()) {
+            if ($vendor === 'wechatpay' && $this->detect->is('WeChat')) {
+                $terminal = 'MWEB';
+            } else {
+                $terminal = 'WAP';
+            }
+        }
+
         $params = array(
             'merchantNo' => $merchantNo,
             'storeNo' => $storeNo,
@@ -140,7 +151,7 @@ class Requestor
             'reference' => $this->getReferenceCode($order->getIncrementId()),
             'ipnUrl' => $ipn,
             'callbackUrl' => $callback,
-            'terminal' => $this->ismobile() ? 'WAP' : 'ONLINE',
+            'terminal' => $terminal,
             'description' => $product,
             'note' => sprintf('#%s(%s)', $order->getRealOrderId(), $order->getCustomerEmail()),
         );
@@ -159,7 +170,7 @@ class Requestor
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
 
-        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+        [$rbody, $rcode, $rheaders] = $httpClient->request('post', $url, [], $params, false);
 
         $this->log($rbody);
 
@@ -178,50 +189,6 @@ class Requestor
     protected function getReferenceCode($order_id)
     {
         return $order_id . 'at' . time();
-    }
-
-    protected function ismobile()
-    {
-        $is_mobile = '0';
-
-        if (preg_match('/(android|up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone)/i',
-            $_SERVER['HTTP_USER_AGENT'])) {
-            $is_mobile = 1;
-        }
-
-        if (
-            (isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])) ||
-            (stripos($_SERVER['HTTP_ACCEPT'], 'application/vnd.wap.xhtml+xml') > 0)
-        ) {
-            $is_mobile = 1;
-        }
-
-        $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
-        $mobile_agents = array(
-            'w3c ', 'acs-', 'alav', 'alca', 'amoi', 'andr', 'audi', 'avan', 'benq', 'bird', 'blac', 'blaz', 'brew',
-            'cell', 'cldc', 'cmd-', 'dang', 'doco', 'eric', 'hipt', 'inno', 'ipaq', 'java', 'jigs', 'kddi', 'keji',
-            'leno', 'lg-c', 'lg-d', 'lg-g', 'lge-', 'maui', 'maxo', 'midp', 'mits', 'mmef', 'mobi', 'mot-', 'moto',
-            'mwbp', 'nec-', 'newt', 'noki', 'oper', 'palm', 'pana', 'pant', 'phil', 'play', 'port', 'prox', 'qwap',
-            'sage', 'sams', 'sany', 'sch-', 'sec-', 'send', 'seri', 'sgh-', 'shar', 'sie-', 'siem', 'smal', 'smar',
-            'sony', 'sph-', 'symb', 't-mo', 'teli', 'tim-', 'tosh', 'tsm-', 'upg1', 'upsi', 'vk-v', 'voda', 'wap-',
-            'wapa', 'wapi', 'wapp', 'wapr', 'webc', 'winw', 'winw', 'xda', 'xda-',
-        );
-
-        if (in_array($mobile_ua, $mobile_agents, true)) {
-            $is_mobile = 1;
-        }
-
-        if (isset($_SERVER['ALL_HTTP'])) {
-            if (stripos($_SERVER['ALL_HTTP'], 'OperaMini') > 0) {
-                $is_mobile = 1;
-            }
-        }
-
-        if (stripos($_SERVER['HTTP_USER_AGENT'], 'windows') > 0) {
-            $is_mobile = 0;
-        }
-
-        return $is_mobile;
     }
 
     /**
@@ -287,7 +254,7 @@ class Requestor
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
 
-        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+        [$rbody, $rcode, $rheaders] = $httpClient->request('post', $url, [], $params, false);
 
         $this->log($rbody);
 
@@ -321,7 +288,7 @@ class Requestor
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
 
-        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+        [$rbody, $rcode, $rheaders] = $httpClient->request('post', $url, [], $params, false);
 
         $this->log($rbody);
 
@@ -357,7 +324,7 @@ class Requestor
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
 
-        list($rbody, $rcode, $rheaders) = $httpClient->request('post', $url, [], $params, false);
+        [$rbody, $rcode, $rheaders] = $httpClient->request('post', $url, [], $params, false);
 
         $this->log($rbody);
 

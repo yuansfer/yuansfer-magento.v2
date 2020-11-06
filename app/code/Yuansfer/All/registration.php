@@ -7,6 +7,7 @@ require_once(BP.'/lib/internal/yuansfer/Error/ErrorBase.php');
 require_once(BP.'/lib/internal/yuansfer/Error/Api.php');
 require_once(BP.'/lib/internal/yuansfer/CurlClient.php');
 require_once(BP.'/lib/internal/yuansfer/Requestor.php');
+require_once(BP.'/lib/internal/yuansfer/MobileDetect.php');
 
 \Magento\Framework\Component\ComponentRegistrar::register(
 	\Magento\Framework\Component\ComponentRegistrar::MODULE,
