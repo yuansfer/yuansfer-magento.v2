@@ -10,16 +10,6 @@ class Callback extends \Magento\Framework\App\Action\Action
     protected $checkoutHelper;
 
     /**
-     * @var \Magento\Checkout\Model\Session
-     */
-    protected $checkoutSession;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
      * @var \Magento\Sales\Model\OrderFactory
      */
     protected $salesOrderFactory;
@@ -37,14 +27,10 @@ class Callback extends \Magento\Framework\App\Action\Action
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Checkout\Helper\Data $checkoutHelper,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Sales\Model\OrderFactory $salesOrderFactory,
         \Psr\Log\LoggerInterface $logger
     ) {
         $this->checkoutHelper = $checkoutHelper;
-        $this->checkoutSession = $checkoutSession;
-        $this->scopeConfig = $scopeConfig;
         $this->salesOrderFactory = $salesOrderFactory;
         $this->logger = $logger;
 
@@ -65,23 +51,14 @@ class Callback extends \Magento\Framework\App\Action\Action
         if (isset($data['status']) && $data['status'] === 'success') {
             $this->_redirect('checkout/onepage/success');
         } else {
-
             if ($data['status'] !== 'init') {
-                $message = __('The order not paid.');
+                $message = __('The order not paid!');
             } else {
-                $message = __('Unable to place the order.');
+                $message = __('Unable to place the order!');
             }
 
-            try {
-                $this->checkoutHelper->sendPaymentFailedEmail(
-                    $this->checkoutSession->getQuote(),
-                    $message
-                );
-            } catch (\Throwable $e) {
-
-            }
-
-            $this->checkoutSession->addError($message);
+            $this->checkoutHelper->getCheckout()->restoreQuote();
+            $this->messageManager->addError(__('Something has gone wrong with your payment. Please contact us.'));
             $this->log($message);
 
             $this->_redirect('checkout/cart');
