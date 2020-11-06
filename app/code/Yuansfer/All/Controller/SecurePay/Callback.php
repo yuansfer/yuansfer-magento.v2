@@ -65,12 +65,25 @@ class Callback extends \Magento\Framework\App\Action\Action
         if (isset($data['status']) && $data['status'] === 'success') {
             $this->_redirect('checkout/onepage/success');
         } else {
-            $this->checkoutHelper->sendPaymentFailedEmail(
-                $this->checkoutSession->getQuote(),
-                __('Unable to place the order.')
-            );
-            $this->checkoutSession->addError(__('Unable to place the order.'));
-            $this->log('place order error');
+
+            if ($data['status'] !== 'init') {
+                $message = __('The order not paid.');
+            } else {
+                $message = __('Unable to place the order.');
+            }
+
+            try {
+                $this->checkoutHelper->sendPaymentFailedEmail(
+                    $this->checkoutSession->getQuote(),
+                    $message
+                );
+            } catch (\Throwable $e) {
+
+            }
+
+            $this->checkoutSession->addError($message);
+            $this->log($message);
+
             $this->_redirect('checkout/cart');
         }
     }
