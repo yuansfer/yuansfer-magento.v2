@@ -136,8 +136,8 @@ class Requestor
 
         $terminal = 'ONLINE';
         if ($this->detect->isMobile()) {
-            if ($vendor === 'wechatpay' && $this->detect->is('WeChat')) {
-                $terminal = 'MWEB';
+            if ($vendor === 'wechatpay') {
+                $terminal = $this->detect->is('WeChat') ? 'WAP' : 'MWEB';
             } else {
                 $terminal = 'WAP';
             }
