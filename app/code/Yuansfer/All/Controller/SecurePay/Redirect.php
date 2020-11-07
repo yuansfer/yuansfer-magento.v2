@@ -102,7 +102,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $alipaySettleCurrencyFroCNY = $this->scopeConfig->getValue('payment/yuansfer/alipay_settle_currency_for_cny', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         $requestor->setDebug($debug);
-        $url = $requestor->securePay(
+        $result = $requestor->securePay(
             $merchantNo,
             $storeNo,
             $token,
@@ -114,9 +114,12 @@ class Redirect extends \Magento\Framework\App\Action\Action
             $alipaySettleCurrencyFroCNY
         );
 
-        $this->log('yuansfer payment redirect to:' . $url);
+        $oOrder->setData('yuansfer_settle_currency', $result['settleCurrency']);
+        $oOrder->save();
 
-        $this->getResponse()->setRedirect($url);
+        $this->log('yuansfer payment redirect to:' . $result['url']);
+
+        $this->getResponse()->setRedirect($result['url']);
     }
 
     protected function log($msg)

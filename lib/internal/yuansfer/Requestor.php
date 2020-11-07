@@ -38,7 +38,7 @@ class Requestor
             'storeNo' => $storeNo,
             'refundAmount' => $amount,
             'currency' => $order->getOrderCurrencyCode(),
-            'settleCurrency' => 'USD',
+            'settleCurrency' => $order->getData('yuansfer_settle_currency'),
             'reference' => $transactionId,
         );
 
@@ -239,7 +239,10 @@ class Requestor
             throw new \ErrorException('Order refund failed!');
         }
 
-        return $resp['result']['cashierUrl'];
+        return [
+            'url' => $resp['result']['cashierUrl'],
+            'settleCurrency' => $resp['result']['settleCurrency'],
+        ];
     }
 
     protected function getReferenceCode($order_id)
