@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2019 Yuansfer. All rights reserved.
+ * Copyright © 2020 Yuansfer. All rights reserved.
  * See COPYING.txt for license details.
  */
 require_once(BP.'/lib/internal/yuansfer/Error/ErrorBase.php');

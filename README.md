@@ -1,5 +1,7 @@
 # Yuansfer plugin for Magento 2.X
 
+`master` branch using the latest v3 API, see [2.x](https://github.com/yuansfer/yuansfer-magento.v2/tree/2.x) branch for v2 API. 
+
 ## Installation
 
 * Upload the `app` and `lib` directories to the root directory of magento2.

@@ -16,37 +16,32 @@ class Requestor
 
     public function __construct(
         \Psr\Log\LoggerInterface $logger
-    ) {
+    )
+    {
         $this->logger = $logger;
         $this->detect = new MobileDetect();
     }
+
     public function refund($merchantNo, $storeNo, $token, $payment, $amount)
     {
         $transactionId = $payment->getParentTransactionId();
         $order = $payment->getOrder();
 
-        $currency = $order->getOrderCurrencyCode();
-        if (!in_array($currency, array('USD', 'CNY', 'RMB'), true)) {
-            throw new \ErrorException('Currency only support "USD", "CNY"');
-        }
-
         $httpClient = CurlClient::instance();
-        $url = 'https://mapi.yuansfer.com/app-data-search/v2/refund';
+        $url = 'https://mapi.yuansfer.com/app-data-search/v3/refund';
         if ($this->debug) {
-            $url = 'https://mapi.yuansfer.yunkeguan.com/app-data-search/v2/refund';
+            $url = 'https://mapi.yuansfer.yunkeguan.com/app-data-search/v3/refund';
         }
 
         $params = array(
             'merchantNo' => $merchantNo,
             'storeNo' => $storeNo,
+            'refundAmount' => $amount,
+            'currency' => $order->getOrderCurrencyCode(),
+            'settleCurrency' => 'USD',
             'reference' => $transactionId,
         );
 
-        if ($currency === 'USD') {
-            $params['amount'] = $amount;
-        } else {
-            $params['rmbAmount'] = $amount;
-        }
         $params = $this->addSign($params, $token);
 
         $this->log('send to ' . $url . ' with params:' . print_r($params, true));
@@ -65,8 +60,6 @@ class Requestor
         }
 
         return $resp;
-
-
     }
 
     private function _interpretResponse($rbody, $rcode, $rheaders, $params)
@@ -114,14 +107,13 @@ class Requestor
         $this->logger->debug('Requestor - ' . $msg);
     }
 
-    public function securePay($merchantNo, $storeNo, $token, $vendor, $order, $ipn, $callback, $customerId = null)
+    public function securePay($merchantNo, $storeNo, $token, $vendor, $order, $ipn, $callback, $customerId = null, $alipaySettleCurrencyFroCNY = null)
     {
         $httpClient = CurlClient::instance();
-        $url = 'https://mapi.yuansfer.com/online/v2/secure-pay';
+        $url = 'https://mapi.yuansfer.com/online/v3/secure-pay';
         if ($this->debug) {
-            $url = 'https://mapi.yuansfer.yunkeguan.com/online/v2/secure-pay';
+            $url = 'https://mapi.yuansfer.yunkeguan.com/online/v3/secure-pay';
         }
-        //$headers = array('Authorization: Bearer ' . $token);
 
         $product = '';
         foreach ($order->getAllItems() as $item) {
@@ -129,37 +121,101 @@ class Requestor
             break;
         }
 
+        $amount = $order->getGrandTotal();
+
         $currency = $order->getOrderCurrencyCode();
-        if (!in_array($currency, array('USD', 'CNY', 'RMB'), true)) {
-            throw new \ErrorException('Currency only support "USD", "CNY"');
+        $settleCurrency = 'USD';
+        $terminal = $this->detect->isMobile() ? 'WAP' : 'ONLINE';
+
+        $osType = null;
+        if ($terminal === 'WAP') {
+            $osType = 'ANDROID';
+            if ($this->detect->is('iOS') || $this->detect->is('iPadOS')) {
+                $osType = 'IOS';
+            }
         }
 
-        $terminal = 'ONLINE';
-        if ($this->detect->isMobile()) {
-            if ($vendor === 'wechatpay') {
-                $terminal = $this->detect->is('WeChat') ? 'WAP' : 'MWEB';
-            } else {
-                $terminal = 'WAP';
+        $creditType = null;
+        if ($vendor === 'creditcard') {
+            if ($currency !== 'USD') {
+                throw new \ErrorException('Credit Card only support "USD", "CNY" for currency');
+            }
+            $creditType = 'normal';
+        } elseif ($vendor === 'unionpay') {
+            if (!in_array($currency, array('USD', 'CNY'), true)) {
+                throw new \ErrorException('Union Pay only support "USD", "CNY" for currency');
+            }
+        } elseif ($vendor === 'wechatpay') {
+            if (!in_array($currency, array('USD', 'CNY'), true)) {
+                throw new \ErrorException('WeChat Pay only support "USD", "CNY" for currency');
+            }
+
+            if ($terminal === 'WAP' && !$this->detect->is('WeChat')) {
+                $terminal = 'MWEB';
+            }
+        } elseif ($vendor === 'alipay') {
+            if (!in_array($currency, array('USD', 'CNY', 'PHP', 'IDR', 'KRW', 'HKD', 'GBP'), true)) {
+                throw new \ErrorException('Alipay only support “USD“, “CNY“, “PHP“, “IDR“, “KRW“, “HKD“, “GBP“ for currency');
+            }
+
+            switch ($currency) {
+                case 'PHP':
+                    if ($amount < 1) {
+                        throw new \ErrorException('The minimum value is 1PHP');
+                    }
+                    break;
+
+                case 'IDR':
+                    if ($amount < 300) {
+                        throw new \ErrorException('The minimum value is 300IDR');
+                    }
+                    break;
+
+                case 'KRW':
+                    if ($amount < 50) {
+                        throw new \ErrorException('The minimum value is 50KRW');
+                    }
+                    break;
+
+                case 'HKD':
+                    if ($amount < 0.1) {
+                        throw new \ErrorException('The minimum value is 0.1HKD');
+                    }
+                    break;
+
+                case 'GBP':
+                    $settleCurrency = 'GBP';
+                    break;
+
+                case 'CNY':
+                    if (in_array($alipaySettleCurrencyFroCNY, array('USD', 'GBP'), true)) {
+                        $settleCurrency = $alipaySettleCurrencyFroCNY;
+                    }
+                    break;
             }
         }
 
         $params = array(
             'merchantNo' => $merchantNo,
             'storeNo' => $storeNo,
+            'amount' => $amount,
+            'currency' => $currency,
+            'settleCurrency' => $settleCurrency,
             'vendor' => $vendor,
-            'currency' => 'USD',
-            'reference' => $this->getReferenceCode($order->getIncrementId()),
             'ipnUrl' => $ipn,
             'callbackUrl' => $callback,
+            'reference' => $this->getReferenceCode($order->getIncrementId()),
             'terminal' => $terminal,
             'description' => $product,
             'note' => sprintf('#%s(%s)', $order->getRealOrderId(), $order->getCustomerEmail()),
         );
 
-        if ($currency === 'USD') {
-            $params['amount'] = $order->getGrandTotal();
-        } else {
-            $params['rmbAmount'] = $order->getGrandTotal();
+        if($osType !== null) {
+            $params['osType'] = $osType;
+        }
+
+        if ($creditType !== null) {
+            $params['creditType'] = $creditType;
         }
 
         if ($customerId !== null) {
@@ -340,7 +396,8 @@ class Requestor
         return $resp['customerInfo']['customerNo'];
     }
 
-    private function customerInfo($order) {
+    private function customerInfo($order)
+    {
         $address = $order->getBillingAddress();
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();

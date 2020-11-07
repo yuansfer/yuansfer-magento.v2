@@ -39,6 +39,10 @@
                 <field id="alipay_title" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>AliPay Title</label>
                 </field>
+                <field id="alipay_settle_currency_for_cny" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Settle Currency for CNY (Alipay only)</label>
+                    <source_model>Yuansfer\All\Model\AlipaySettleCurrency</source_model>
+                </field>
                 <field id="wechatpay_active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>WechatPay Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

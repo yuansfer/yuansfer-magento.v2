@@ -93,7 +93,8 @@ class YuansferConfigProvider implements ConfigProviderInterface
                     'isActive' => $this->config->getValue('payment/yuansfer/alipay_active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
                     'title' => $this->config->getValue('payment/yuansfer/alipay_title', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
                     'imageUrl' => $alipayImage,
-                    'imageWidth' => $alipayWidth
+                    'imageWidth' => $alipayWidth,
+                    'settleCurrencyForCNY' => $this->config->getValue('payment/yuansfer/alipay_settle_currency_for_cny', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
                 ],
                 MethodAbstract::CODE_WECHATPAY => [
                     'isActive' => $this->config->getValue('payment/yuansfer/wechatpay_active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),

@@ -89,7 +89,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         } elseif ($methodCode == \Yuansfer\All\Model\MethodAbstract::CODE_CREDITCARD) {
             $vendor = 'creditcard';
 
-            $createAccount = $this->scopeConfig->getValue('payment/' . MethodAbstract::CODE_CREDITCARD . '/createAccount', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $createAccount = $this->scopeConfig->getValue('payment/yuansfer/creditcard_create_account', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         }
 
         $requestor = new \Requestor($this->logger);
@@ -98,6 +98,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         if ($createAccount) {
             $customerId = $requestor->customer($merchantNo, $storeNo, $token, $oOrder);
         }
+
+        $alipaySettleCurrencyFroCNY = $this->scopeConfig->getValue('payment/yuansfer/alipay_settle_currency_for_cny', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         $requestor->setDebug($debug);
         $url = $requestor->securePay(
@@ -108,7 +110,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
             $oOrder,
             $ipn,
             $callback,
-            $customerId
+            $customerId,
+            $alipaySettleCurrencyFroCNY
         );
 
         $this->log('yuansfer payment redirect to:' . $url);
