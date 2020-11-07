@@ -89,7 +89,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         } elseif ($methodCode == \Yuansfer\All\Model\MethodAbstract::CODE_CREDITCARD) {
             $vendor = 'creditcard';
 
-            $createAccount = $this->scopeConfig->getValue('payment/' . MethodAbstract::CODE_CREDITCARD . '/createAccount', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $createAccount = $this->scopeConfig->getValue('payment/yuansfer/creditcard_create_account', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         }
 
         $requestor = new \Requestor($this->logger);
