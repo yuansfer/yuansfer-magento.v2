@@ -138,7 +138,7 @@ class Requestor
         $creditType = null;
         if ($vendor === 'creditcard') {
             if ($currency !== 'USD') {
-                throw new \ErrorException('Credit Card only support "USD", "CNY" for currency');
+                throw new \ErrorException('Credit Card only support "USD" for currency');
             }
             $creditType = 'normal';
         } elseif ($vendor === 'unionpay') {
