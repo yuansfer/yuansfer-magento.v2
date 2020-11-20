@@ -28,6 +28,8 @@ class MethodAbstract implements \Magento\Payment\Model\MethodInterface
     const CODE_ALIPAY = 'yuansfer_alipay';
     const CODE_WECHATPAY = 'yuansfer_wechatpay';
     const CODE_CREDITCARD = 'yuansfer_creditcard';
+    const CODE_PAYPAL = 'yuansfer_paypal';
+    const CODE_VENMO = 'yuansfer_venmo';
 
     protected $_store;
     protected $_urlBuilder;

@@ -58,6 +58,34 @@
                 <can_initialize>1</can_initialize>
                 <is_gateway>1</is_gateway>
             </yuansfer_creditcard>
+            <yuansfer_paypal>
+                <active>1</active>
+                <model>PaypalMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Yuansfer PayPal</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </yuansfer_paypal>
+            <yuansfer_venmo>
+                <active>1</active>
+                <model>VenmoMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Yuansfer Venmo</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </yuansfer_venmo>
         </payment>
     </default>
 </config>

@@ -193,6 +193,10 @@ class Requestor
                     }
                     break;
             }
+        } elseif (in_array($vendor, array('paypal', 'venmo'), true)) {
+            if ($currency !== 'USD') {
+                throw new \ErrorException(ucfirst($vendor) . ' only support "USD" for currency');
+            }
         }
 
         $params = array(

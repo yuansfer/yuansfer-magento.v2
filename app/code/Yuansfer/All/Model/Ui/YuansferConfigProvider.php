@@ -72,6 +72,12 @@ class YuansferConfigProvider implements ConfigProviderInterface
         $creditcardImage = $this->assetRepo->getUrl("Yuansfer_All::images/yuansfer_creditcard/logo_".$localeCode.".png");
         $creditcardWidth = "128";
 
+        $paypalImage = $this->assetRepo->getUrl("Yuansfer_All::images/yuansfer_paypal/logo_".$localeCode.".svg");
+        $paypalWidth = "165";
+
+        $venmoImage = $this->assetRepo->getUrl("Yuansfer_All::images/yuansfer_venmo/logo_".$localeCode.".svg");
+        $venmoWidth = "165";
+
         $message = 'You will be taken to the payment website when you click Place Order';
 
         return [
@@ -108,7 +114,19 @@ class YuansferConfigProvider implements ConfigProviderInterface
                     'createAccount' => $this->config->getValue('payment/yuansfer/creditcard_create_account', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
                     'imageUrl' => $creditcardImage,
                     'imageWidth' => $creditcardWidth
-                ]
+                ],
+                MethodAbstract::CODE_PAYPAL => [
+                    'isActive' => $this->config->getValue('payment/yuansfer/paypal_active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'title' => $this->config->getValue('payment/yuansfer/paypal_title', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'imageUrl' => $paypalImage,
+                    'imageWidth' => $paypalWidth,
+                ],
+                MethodAbstract::CODE_VENMO => [
+                    'isActive' => $this->config->getValue('payment/yuansfer/venmo_active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'title' => $this->config->getValue('payment/yuansfer/venmo_title', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'imageUrl' => $venmoImage,
+                    'imageWidth' => $venmoWidth,
+                ],
             ]
         ];
     }

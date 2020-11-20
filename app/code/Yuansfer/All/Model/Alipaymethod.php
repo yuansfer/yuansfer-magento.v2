@@ -18,11 +18,8 @@ class Alipaymethod extends MethodAbstract {
     	//does not work for wechar browser
 		if(preg_match('/(micromessenger)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
 			return false;
-		}else
-			return parent::isAvailable($quote);
+		}
+
+		return parent::isAvailable($quote);
 	}
-
-
-
-
 }

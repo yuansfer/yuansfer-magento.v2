@@ -110,4 +110,58 @@
             </argument>
         </arguments>
     </virtualType>
+
+    <virtualType name="PaypalMethodAdapter" type="Yuansfer\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Yuansfer\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PaypalValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PaypalConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Yuansfer\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaypalConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PaypalConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaypalValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PaypalConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="VenmoMethodAdapter" type="Yuansfer\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Yuansfer\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+            <argument name="valueHandlerPool" xsi:type="object">VenmoValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="VenmoConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Yuansfer\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="VenmoConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">VenmoConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="VenmoValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">VenmoConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>

@@ -90,6 +90,10 @@ class Redirect extends \Magento\Framework\App\Action\Action
             $vendor = 'creditcard';
 
             $createAccount = $this->scopeConfig->getValue('payment/yuansfer/creditcard_create_account', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        } elseif ($methodCode == \Yuansfer\All\Model\MethodAbstract::CODE_PAYPAL) {
+            $vendor = 'paypal';
+        } elseif ($methodCode == \Yuansfer\All\Model\MethodAbstract::CODE_VENMO) {
+            $vendor = 'venmo';
         }
 
         $requestor = new \Requestor($this->logger);

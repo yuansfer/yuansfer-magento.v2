@@ -8,7 +8,9 @@ define([
             alipayType = 'yuansfer_alipay',
             unionpayType = 'yuansfer_unionpay',
             wechatpayType = 'yuansfer_wechatpay',
-            creditcardType = 'yuansfer_creditcard';
+            creditcardType = 'yuansfer_creditcard',
+            paypalType = 'yuansfer_paypal',
+            venmoType = 'yuansfer_venmo';
 
             if(config[alipayType].isActive) {
                 rendererList.push(
@@ -39,6 +41,22 @@ define([
                     {
                         type: creditcardType,
                         component: 'Yuansfer_All/js/view/payment/method-renderer/yuansfer_creditcard'
+                    }
+                );
+            }
+            if(config[paypalType].isActive) {
+                rendererList.push(
+                    {
+                        type: paypalType,
+                        component: 'Yuansfer_All/js/view/payment/method-renderer/yuansfer_paypal'
+                    }
+                );
+            }
+            if(config[venmoType].isActive) {
+                rendererList.push(
+                    {
+                      type: venmoType,
+                      component: 'Yuansfer_All/js/view/payment/method-renderer/yuansfer_venmo'
                     }
                 );
             }
