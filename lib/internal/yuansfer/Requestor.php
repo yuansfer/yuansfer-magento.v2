@@ -56,7 +56,7 @@ class Requestor
             !isset($resp['ret_code']) ||
             $resp['ret_code'] !== '000100'
         ) {
-            throw new \ErrorException('Order refund failed!');
+            throw new \ErrorException('Order refund API call failed!');
         }
 
         return $resp;
@@ -240,7 +240,7 @@ class Requestor
             !isset($resp['ret_code']) ||
             $resp['ret_code'] !== '000100'
         ) {
-            throw new \ErrorException('Order refund failed!');
+            throw new \ErrorException('Payment API call failed!');
         }
 
         return [
@@ -327,7 +327,7 @@ class Requestor
             !isset($resp['ret_code']) ||
             $resp['ret_code'] !== '000100'
         ) {
-            throw new \ErrorException('Order refund failed!');
+            throw new \ErrorException('Update customer API call failed!');
         }
 
         return $resp['customerInfo']['customerNo'];
@@ -397,7 +397,7 @@ class Requestor
             !isset($resp['ret_code']) ||
             $resp['ret_code'] !== '000100'
         ) {
-            throw new \ErrorException('Order refund failed!');
+            throw new \ErrorException('Create customer API call failed!');
         }
 
         return $resp['customerInfo']['customerNo'];
