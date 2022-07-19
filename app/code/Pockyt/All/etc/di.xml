@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Magento\Payment\Model\Method\Adapter" type="Pockyt\All\Model\MethodAbstract" />
+
+    <virtualType name="AlipayMethodAdapter" type="Pockyt\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_ALIPAY</argument>
+            <argument name="valueHandlerPool" xsi:type="object">AlipayValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="AlipayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_ALIPAY</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlipayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">AlipayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AlipayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">AlipayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="UnionpayMethodAdapter" type="Pockyt\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_UNIONPAY</argument>
+            <argument name="valueHandlerPool" xsi:type="object">UnionpayValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="UnionpayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_UNIONPAY</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="UnionpayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">UnionpayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="UnionpayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">UnionpayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WechatpayMethodAdapter" type="Pockyt\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_WECHATPAY</argument>
+            <argument name="valueHandlerPool" xsi:type="object">WechatpayValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WechatpayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_WECHATPAY</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="WechatpayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">WechatpayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="WechatpayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">WechatpayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CreditcardMethodAdapter" type="Pockyt\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_CREDITCARD</argument>
+            <argument name="valueHandlerPool" xsi:type="object">CreditcardValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CreditcardConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_CREDITCARD</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CreditcardConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">CreditcardConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CreditcardValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">CreditcardConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PaypalMethodAdapter" type="Pockyt\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PaypalValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PaypalConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaypalConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PaypalConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaypalValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PaypalConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="VenmoMethodAdapter" type="Pockyt\All\Model\MethodAbstract">
+        <arguments>
+            <argument name="code" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+            <argument name="valueHandlerPool" xsi:type="object">VenmoValueHandlerPool</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="VenmoConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Pockyt\All\Model\MethodAbstract::CODE_PAYPAL</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="VenmoConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">VenmoConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="VenmoValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">VenmoConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

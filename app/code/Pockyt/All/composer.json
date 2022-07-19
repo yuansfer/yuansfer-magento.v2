@@ -1,0 +1,20 @@
+{
+    "name": "pockyt/module-all",
+    "description": "Demonstrates integration with pockyt payment gateway",
+    "require": {
+        "php": "~5.6.5|7.0.2|7.0.4|~7.0.6|~7.1.0|~7.2.0|~7.3.0|~7.4.0"
+    },
+    "type": "magento2-module",
+    "version": "3.2.0",
+    "license": [
+        "Commercial"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Pockyt\\All\\": ""
+        }
+    }
+}

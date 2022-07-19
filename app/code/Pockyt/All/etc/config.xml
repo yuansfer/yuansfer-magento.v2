@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <pockyt_alipay>
+                <active>1</active>
+                <model>AlipayMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Pockyt AliPay</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </pockyt_alipay>
+            <pockyt_unionpay>
+                <active>1</active>
+                <model>UnionpayMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Pockyt UnionPay</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </pockyt_unionpay>
+            <pockyt_wechatpay>
+                <active>1</active>
+                <model>WechatpayMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Pockyt WechatPay</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </pockyt_wechatpay>
+            <pockyt_creditcard>
+                <active>1</active>
+                <model>CreditcardMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Pockyt CreditCard</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_refund>1</can_refund>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </pockyt_creditcard>
+            <pockyt_paypal>
+                <active>1</active>
+                <model>PaypalMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Pockyt PayPal</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_refund>1</can_refund>
+                <can_capture>1</can_capture>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </pockyt_paypal>
+            <pockyt_venmo>
+                <active>1</active>
+                <model>VenmoMethodAdapter</model>
+                <order_status>pending_payment</order_status>
+                <title>Pockyt Venmo</title>
+                <allowspecific>0</allowspecific>
+                <payment_action>sale</payment_action>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_refund>1</can_refund>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <can_initialize>1</can_initialize>
+                <is_gateway>1</is_gateway>
+            </pockyt_venmo>
+        </payment>
+    </default>
+</config>
